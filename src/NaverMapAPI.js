@@ -118,11 +118,6 @@ function NaverMapAPI({waterSpringList, regionOption}) {
 							<></>
 						)
 					}
-					if(item.isDrinkable !== "None") {
-						return (
-							<></>
-						)
-					}
 					return (
 						<CustomMarker
 							item={item}
