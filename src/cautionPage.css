@@ -1,0 +1,5 @@
+.indent_line > p {
+	text-indent: -7px;
+	padding-left: 7px;
+	word-break: keep-all;
+}

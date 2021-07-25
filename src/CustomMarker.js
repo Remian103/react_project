@@ -46,8 +46,8 @@ function CustomMarker({ item, id, navermaps, children }) {
 					</div>
 				}
 			>
-	    		{item.lnmadr}<br/>
-	    		{item.isDrinkable}<br/>
+	    		{item.lnmadr}
+	    		{item.isDrinkable}
 	    		기관명 : {item.institutionNm}
 			</Modal>
 		</>
