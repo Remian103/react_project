@@ -87,11 +87,6 @@ function NaverMapAPI({waterSpringList, regionOption}) {
 				onCenterChanged={handleCenterChanged}
 				zoom={zoom}
     			minZoom={6}
-    			mapTypeControl={true}
-    			zoomControl={true}
-    			zoomControlOptions={{
-        			position:navermaps.Position.RIGHT_CENTER
-    			}}
     			logoControlOptions={{
 					position: navermaps.Position.LEFT_BOTTOM
     			}}
