@@ -1,19 +1,18 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { NaverMap, Marker } from 'react-naver-maps';
 import CustomMarker from './CustomMarker';
 
-function NaverMapAPI({waterSpringList, regionOption}) {
+function NaverMapAPI({waterSpringList, regionOption, smallOption}) {
 	const navermaps = window.naver.maps;
 	// gps 위치
 	const [GPSpos, setGPSpos] = useState(
 		{}
 	);
 
-	const [center, setCenter] = useState(
-		new navermaps.LatLng(37.554722, 126.970833)
-	);
-
-	const [zoom, setZoom] = useState(10);
+	const defaultPos = new navermaps.LatLng(35.714091, 127.7179033);
+	const defaultZoom = 7;
+	const [center, setCenter] = useState(defaultPos);
+	const [zoom, setZoom] = useState(defaultZoom);
 	
 	// gps 정보 수신
 	const getLocation = () => {
@@ -23,13 +22,15 @@ function NaverMapAPI({waterSpringList, regionOption}) {
 					console.log(position.coords);
 					// position.coords.latitude , longitude
 					if(position.coords.latitude !== GPSpos._lat ||
-						position.coords.longitude !== GPSpos._lng)
+						position.coords.longitude !== GPSpos._lng) {
 						setGPSpos(
 							new navermaps.LatLng(
 								position.coords.latitude,
 								position.coords.longitude
 							)
 						);
+						setZoom(14);
+					}
 					setCenter(
 						new navermaps.LatLng(
 							position.coords.latitude,
@@ -54,6 +55,11 @@ function NaverMapAPI({waterSpringList, regionOption}) {
 
 	const handleCenterChanged = (pos) => {
 		setCenter(pos);
+		console.log(pos);
+	}
+	const handleZoomChanged = (n) => {
+		setZoom(n);
+		console.log(n);
 	}
 
 	const onClickButton = () => {
@@ -63,15 +69,36 @@ function NaverMapAPI({waterSpringList, regionOption}) {
 
 	// 위치 초기화
 	const onClickButton2 = () => {
-		setCenter(
-			new navermaps.LatLng(37.554722, 126.970833)
-		);
+		setCenter(defaultPos);
+		setZoom(defaultZoom);
 	}
 
-	const [regionPin, setRegionPin] = useState(waterSpringList);
+	const [regionPin, setRegionPin] = useState([]);
+
 	useEffect(() => {
-		setRegionPin(waterSpringList.filter(item => item.lnmadr.includes(regionOption)));
-	}, [regionOption]);
+		if(regionOption !== "")
+			setRegionPin(waterSpringList
+				.filter(item => item.lnmadr.includes(regionOption))
+				.filter(item => item.lnmadr.includes(smallOption))
+			);
+	}, [regionOption, smallOption]);
+
+	// 초기에 유명 약수터 표기
+	const popularList = useMemo(() =>[
+		"원산면옥(초정약수터)",
+		"달기약수탕",
+		"신촌약수탕",
+		"초수골약수",
+		"도동약수",
+		"고란약수",
+		"당몰샘",
+		"영실물",
+		"함박산약수터",
+		"상원사샘터",
+	], []);
+	useEffect(() => {
+		setRegionPin(waterSpringList.filter(item => popularList.includes(item.mnrlspNm)))
+	}, []);
 
 	return (
 		<>
@@ -86,7 +113,7 @@ function NaverMapAPI({waterSpringList, regionOption}) {
 				center={center}
 				onCenterChanged={handleCenterChanged}
 				zoom={zoom}
-    			minZoom={6}
+				onZoomChanged={handleZoomChanged}
     			logoControlOptions={{
 					position: navermaps.Position.LEFT_BOTTOM
     			}}

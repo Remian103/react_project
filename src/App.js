@@ -51,33 +51,36 @@ function App() {
 		setItems(localData.items);
 	}, [items]);
 
+	// 약수터 필터 정보 option
 	const [option, setOption] = useState("");
-/*	const options = useMemo(()=> [
-		{value:"서울", label:"서울"},
-		{value:"인천", label:"인천"},
-		{value:"경기", label:"경기"},
-		{value:"충청남도", label:"충남"},
-	],[]);*/
+	const [soption, setSOption] = useState("");
+
+	//big option  ex) 서울, 경기, ...
 	const options = useMemo(()=> {
 		let list = [];
 		region.region.map(r => list.push({value:r.big, label:r.big}));
 		return list;
-	}, [])
+	}, []);
 
+	// small option  ex) 부평구, 수원시, ...
 	const soptions = useMemo(()=> {
 		let list = [];
 		region.region.filter(r => r.big === option).map(r => r.small.map(k => list.push({value:k, label:k})));
 		return list;
-	}, [option])
+	}, [option]);
 
-	const selectChange = (option) => {
+	const selectChangeA = (option) => {
 		setOption(option.value);
+		setSOption("");
+	};
+	const selectChangeB = (option) => {
+		setSOption(option.value);
 	};
 
+	// 지역 옵션 변경
 	useEffect(() => {
-		//마커 개수 바꾸기
-		console.log(`option 변경됨! ${option}`);
-	}, [option]);
+		console.log(`option 변경됨! ${option} ${soption}`);
+	}, [option, soption]);
 
 	return (
 		<>
@@ -89,10 +92,11 @@ function App() {
 			<div>
 				<Select
 					options={options}
-					onChange={selectChange}
+					onChange={selectChangeA}
 				/>
 				<Select
 					options={soptions}
+					onChange={selectChangeB}
 				/>
 			</div>
 			<div>
@@ -101,7 +105,7 @@ function App() {
 					error={<p>Maps Load Error...</p>}
 					loading={<p>Maps Loading...</p>}
 				>
-					<NaverMapAPI waterSpringList={items} regionOption={option}/>
+					<NaverMapAPI waterSpringList={items} regionOption={option} smallOption={soption}/>
 				</RenderAfterNavermapsLoaded>
 			</div>
 		</>
