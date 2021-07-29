@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { NaverMap, Marker } from 'react-naver-maps';
 import CustomMarker from './CustomMarker';
 
-function NaverMapAPI({waterSpringList, regionOption, smallOption}) {
+function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) {
 	const navermaps = window.naver.maps;
 	// gps 위치
 	const [GPSpos, setGPSpos] = useState(
@@ -88,22 +88,30 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption}) {
 		"원산면옥(초정약수터)",
 		"달기약수탕",
 		"신촌약수탕",
-		"초수골약수",
-		"도동약수",
+		"초수골약수터(상탕)",
+		"초수골약수터(하탕)",
+		"도동약수터",
 		"고란약수",
 		"당몰샘",
 		"영실물",
 		"함박산약수터",
 		"상원사샘터",
 	], []);
+
+	// 초기화 실행
 	useEffect(() => {
 		setRegionPin(waterSpringList.filter(item => popularList.includes(item.mnrlspNm)))
-	}, []);
+	}, [optionReset]);
 
 	return (
 		<>
-			<button onClick={onClickButton}>현재위치</button>
-			<button onClick={onClickButton2}>원위치</button>
+			<div style={{display:'flex', justifyContent:'center'}}>
+				<div>
+					<button onClick={onClickButton}>현재위치</button>
+					<button onClick={onClickButton2}>원위치</button>
+				</div>
+				<div> {regionPin.length}개 약수터 발견 </div>
+			</div>
 			<NaverMap
 				mapDivId={'maps-getting-started-uncontrolled'}
 				style={{

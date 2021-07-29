@@ -18,10 +18,9 @@ function App() {
 	const [items, setItems] = useState(
 		localData.items
 	);
-
+/*
 	useEffect(() => {
-		/*
-		// axios, http-proxy-middleware 사용
+		//1번 방법) axios, http-proxy-middleware 사용
 		console.log("약수터 정보 불러오는중 (axios)");
 		for(let i = 1; i <= 15; i++) {
 			let pageNo = String(i);
@@ -46,14 +45,14 @@ function App() {
 				console.log(error);
 			});
 		}
-		*/
-		//local data 사용
+		//2번 방법) local data 사용
 		setItems(localData.items);
 	}, [items]);
+*/
 
 	// 약수터 필터 정보 option
-	const [option, setOption] = useState("");
-	const [soption, setSOption] = useState("");
+	const [option, setOption] = useState(null);
+	const [soption, setSOption] = useState(null);
 
 	//big option  ex) 서울, 경기, ...
 	const options = useMemo(()=> {
@@ -61,43 +60,53 @@ function App() {
 		region.region.map(r => list.push({value:r.big, label:r.big}));
 		return list;
 	}, []);
+	const selectChangeA = (e) => {
+		setOption(e);
+	};
 
 	// small option  ex) 부평구, 수원시, ...
 	const soptions = useMemo(()=> {
 		let list = [];
-		region.region.filter(r => r.big === option).map(r => r.small.map(k => list.push({value:k, label:k})));
+		console.log(option);
+		if(option === null) return list;
+		region.region.filter(r => r.big === option.value).map(r => r.small.map(k => list.push({value:k, label:k})));
+		console.log(list);
 		return list;
 	}, [option]);
-
-	const selectChangeA = (option) => {
-		setOption(option.value);
-		setSOption("");
-	};
-	const selectChangeB = (option) => {
-		setSOption(option.value);
+	const selectChangeB = (e) => {
+		setSOption(e);
 	};
 
-	// 지역 옵션 변경
-	useEffect(() => {
-		console.log(`option 변경됨! ${option} ${soption}`);
-	}, [option, soption]);
+	// 지역 초기화 옵션
+	const [optionReset, setOptionReset] = useState(true);
+	const resetOption = () => {
+		setOption(null)
+		setSOption(null)
+		setOptionReset(boolElement => !boolElement);
+	};
 
 	return (
 		<>
 			<CautionPage />
-			<p>{option}</p>
-			<div>
-				{items.length === 0 ? '약수터 로딩중...' : '약수터 로딩 완료!'}
-			</div>
-			<div>
+			<div style={{
+				marginLeft:'35%',
+				marginRight:'35%',
+				textAlign: 'center'
+			}}>
+				지역 탐색
 				<Select
+					value={option}
 					options={options}
 					onChange={selectChangeA}
+					placeholder="대분류.."
 				/>
 				<Select
+					value={soption}
 					options={soptions}
 					onChange={selectChangeB}
+					placeholder="소분류.."
 				/>
+				<button onClick={resetOption}>초기화</button>
 			</div>
 			<div>
 				<RenderAfterNavermapsLoaded
@@ -105,7 +114,12 @@ function App() {
 					error={<p>Maps Load Error...</p>}
 					loading={<p>Maps Loading...</p>}
 				>
-					<NaverMapAPI waterSpringList={items} regionOption={option} smallOption={soption}/>
+					<NaverMapAPI
+						waterSpringList={items}
+						regionOption={option === null ? "" : option.value}
+						smallOption={soption === null ? "" : soption.value}
+						optionReset={optionReset}
+					/>
 				</RenderAfterNavermapsLoaded>
 			</div>
 		</>

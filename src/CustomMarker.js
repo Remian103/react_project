@@ -15,43 +15,46 @@ function CustomMarker({ item, id, navermaps, children }) {
     }
 
     function kk(item) {
-    	const style = {
-    		color: item.isDrinkable === "True" ? "green" : "red",
-    	}
-		return
-			<div style={style}>
-				{item.mnrlspNm}
-			</div>
+       const style = {
+          color: item.isDrinkable === "True" ? "green" : "red",
+       }
+      return
+         <div style={style}>
+            {item.mnrlspNm}
+         </div>
     }
 
-	return (
-		<>
-			<Marker
-				key={id}
-				position={
-					new navermaps.LatLng(
-						item.latitude,
-						item.longitude
-					)
-				}
-				animation={0}
-				onClick={openModal}
-			/>
-			<Modal
-				open={ modalOpen }
-				close={ closeModal }
-				header={
-					<div style={{color: item.isDrinkable === "True" ? "green" : "red",}}>
-						{item.mnrlspNm}
-					</div>
-				}
-			>
-	    		{item.lnmadr}
-	    		{item.isDrinkable}
-	    		기관명 : {item.institutionNm}
-			</Modal>
-		</>
-	)
+   return (
+      <>
+         <Marker
+            key={id}
+            position={
+               new navermaps.LatLng(
+                  item.latitude,
+                  item.longitude
+               )
+            }
+            animation={0}
+            onClick={openModal}
+         />
+         <Modal
+            open={ modalOpen }
+            close={ closeModal }
+            header={
+               <div style={{color: item.isDrinkable === "True" ? "green" : "red",}}>
+                  {item.mnrlspNm}
+               </div>
+            }
+         >
+            <div style={{fontSize: 'larger', fontWeight: 'bold'}}>
+               수질 : <div style={{color: item.isDrinkable === "True" ? "green" : "red", display: 'inline-block'}}>{item.isDrinkable == "True" ? "양호" : "불량"}</div>
+            </div><br/>
+            {item.lnmadr}<br/>
+             최근 수질검사 날짜 및 결과 : {item.qltwtrInspctDate} & {item.qltwtrInspctResultType}<br/>
+            최근 4일 이내 강수 : {item.total_rn > 0 ? "있음" : "없음"}<br/>
+         </Modal>
+      </>
+   )
 }
 
 
