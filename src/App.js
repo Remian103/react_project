@@ -88,25 +88,31 @@ function App() {
 	return (
 		<>
 			<CautionPage />
+			<div style={{fontWeight:'bold', marginTop:'3%', marginBottom:'3%', fontSize:'larger', textAlign: 'center'}}>
+				우리 동네 약수터 안심하고 먹을만 한가요...?
+			</div>
 			<div style={{
 				marginLeft:'35%',
 				marginRight:'35%',
 				textAlign: 'center'
 			}}>
-				지역 탐색
-				<Select
-					value={option}
-					options={options}
-					onChange={selectChangeA}
-					placeholder="대분류.."
-				/>
+				<div style={{marginBottom:'5%'}}>
+					<Select
+						value={option}
+						options={options}
+						onChange={selectChangeA}
+						placeholder="대분류.."
+					/>
+				</div>
 				<Select
 					value={soption}
 					options={soptions}
 					onChange={selectChangeB}
 					placeholder="소분류.."
 				/>
-				<button onClick={resetOption}>초기화</button>
+				<div style={{marginTop:'3%', marginBottom:'3%'}}>
+					<button onClick={resetOption}>초기화</button>
+				</div>
 			</div>
 			<div>
 				<RenderAfterNavermapsLoaded

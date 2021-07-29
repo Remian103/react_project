@@ -19,6 +19,7 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 		if(navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				function(position) {
+					console.log("현재 위치 설정됨")
 					console.log(position.coords);
 					// position.coords.latitude , longitude
 					if(position.coords.latitude !== GPSpos._lat ||
@@ -53,13 +54,12 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 		}
 	}
 
+	// 맵 움직임
 	const handleCenterChanged = (pos) => {
 		setCenter(pos);
-		console.log(pos);
 	}
-	const handleZoomChanged = (n) => {
-		setZoom(n);
-		console.log(n);
+	const handleZoomChanged = (zoom) => {
+		setZoom(zoom);
 	}
 
 	const onClickButton = () => {
@@ -77,13 +77,16 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 
 	useEffect(() => {
 		if(regionOption !== "")
-			setRegionPin(waterSpringList
+			setRegionPin(
+				waterSpringList
 				.filter(item => item.lnmadr.includes(regionOption))
 				.filter(item => item.lnmadr.includes(smallOption))
 			);
+			setCenter(defaultPos);
+			setZoom(defaultZoom);
 	}, [regionOption, smallOption]);
 
-	// 초기에 유명 약수터 표기
+	// 첫 시작 페이지에 유명 약수터 표기하기 위한 변수 설정
 	const popularList = useMemo(() =>[
 		"원산면옥(초정약수터)",
 		"달기약수탕",
@@ -101,7 +104,25 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 	// 초기화 실행
 	useEffect(() => {
 		setRegionPin(waterSpringList.filter(item => popularList.includes(item.mnrlspNm)))
+		setCenter(defaultPos);
+		setZoom(defaultZoom);
 	}, [optionReset]);
+
+
+	// test 용 버튼
+	const onClickHandle = () => {
+		console.log(center);
+		console.log(zoom);
+	};
+
+	// 핀 누르면 자동으로 이동
+	const [currentPin, setCurrentPin] = useState(null);
+	useEffect(() => {
+		if(currentPin !== null) {
+			setCenter(new navermaps.LatLng(currentPin.latitude,currentPin.longitude));
+			setZoom(13);
+		}
+	}, [currentPin]);
 
 	return (
 		<>
@@ -109,6 +130,7 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 				<div>
 					<button onClick={onClickButton}>현재위치</button>
 					<button onClick={onClickButton2}>원위치</button>
+					<button onClick={onClickHandle}>테스트</button>
 				</div>
 				<div> {regionPin.length}개 약수터 발견 </div>
 			</div>
@@ -152,6 +174,7 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 						<CustomMarker
 							item={item}
 							id={index+1}
+							setter={setCurrentPin}
 							navermaps={navermaps}
 						/>
 					)
