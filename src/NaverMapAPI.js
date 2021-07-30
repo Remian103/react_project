@@ -103,17 +103,10 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 
 	// 초기화 실행
 	useEffect(() => {
-		setRegionPin(waterSpringList.filter(item => popularList.includes(item.mnrlspNm)))
+		setRegionPin(waterSpringList.filter(item => popularList.includes(item.mnrlspNm)));
 		setCenter(defaultPos);
 		setZoom(defaultZoom);
 	}, [optionReset]);
-
-
-	// test 용 버튼
-	const onClickHandle = () => {
-		console.log(center);
-		console.log(zoom);
-	};
 
 	// 핀 누르면 자동으로 이동
 	const [currentPin, setCurrentPin] = useState(null);
@@ -126,19 +119,15 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 
 	return (
 		<>
-			<div style={{display:'flex', justifyContent:'center'}}>
-				<div>
-					<button onClick={onClickButton}>현재위치</button>
-					<button onClick={onClickButton2}>원위치</button>
-					<button onClick={onClickHandle}>테스트</button>
-				</div>
+			<div style={{display:'flex', justifyContent:'center', height:'5vh', alignItems:'center'}}>
+				<button onClick={onClickButton}>현재위치</button>
 				<div> {regionPin.length}개 약수터 발견 </div>
 			</div>
 			<NaverMap
 				mapDivId={'maps-getting-started-uncontrolled'}
 				style={{
 					width:'100%', // 네이버지도 가로 길이
-					height:'85vh' // 네이버지도 세로 길이
+					height:'71vh' // 네이버지도 세로 길이
 				}}
 				center={center}
 				onCenterChanged={handleCenterChanged}

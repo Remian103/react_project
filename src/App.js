@@ -88,15 +88,16 @@ function App() {
 	return (
 		<>
 			<CautionPage />
-			<div style={{fontWeight:'bold', marginTop:'3%', marginBottom:'3%', fontSize:'larger', textAlign: 'center'}}>
+			<div style={{fontWeight:'bold', height:'3vh', marginTop:'3vh', marginBottom:'3vh', fontSize:'larger', textAlign: 'center'}}>
 				우리 동네 약수터 안심하고 먹을만 한가요...?
 			</div>
 			<div style={{
 				marginLeft:'35%',
 				marginRight:'35%',
-				textAlign: 'center'
+				textAlign: 'center',
+				height:'15vh'
 			}}>
-				<div style={{marginBottom:'5%'}}>
+				<div style={{marginBottom:'3px'}}>
 					<Select
 						value={option}
 						options={options}
@@ -110,7 +111,7 @@ function App() {
 					onChange={selectChangeB}
 					placeholder="소분류.."
 				/>
-				<div style={{marginTop:'3%', marginBottom:'3%'}}>
+				<div style={{marginTop:'7px', marginBottom:'7px'}}>
 					<button onClick={resetOption}>초기화</button>
 				</div>
 			</div>
