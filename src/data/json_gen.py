@@ -20,7 +20,6 @@ wellnum = 0;
 well_list = []
 
 for pageNo in range(0, 15):
-	print(pageNo)
 	url = 'http://api.data.go.kr/openapi/tn_pubr_public_appn_mnrlsp_info_api?serviceKey='+serviceKey+'&pageNo='+str(pageNo)+'&numOfRows=100&type=json'
 	res = requests.get(url).json();
 

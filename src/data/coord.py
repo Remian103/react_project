@@ -2,8 +2,6 @@
 import googlemaps
 
 def find_coord(address, googleKey):
-	json_data = json.load(open('key.json', 'r'))
-
 	GOOGLEMAPS_KEY = googleKey
 	gmaps = googlemaps.Client(key = GOOGLEMAPS_KEY)
 	geocoded = gmaps.geocode(address, language = 'ko')

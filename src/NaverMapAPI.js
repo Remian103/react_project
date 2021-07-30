@@ -5,14 +5,16 @@ import CustomMarker from './CustomMarker';
 function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) {
 	const navermaps = window.naver.maps;
 	// gps 위치
-	const [GPSpos, setGPSpos] = useState(
-		{}
-	);
+	const [GPSpos, setGPSpos] = useState(null);
 
 	const defaultPos = new navermaps.LatLng(35.714091, 127.7179033);
 	const defaultZoom = 7;
 	const [center, setCenter] = useState(defaultPos);
 	const [zoom, setZoom] = useState(defaultZoom);
+
+
+	// 핀 정보
+	const [regionPin, setRegionPin] = useState([]);
 	
 	// gps 정보 수신
 	const getLocation = () => {
@@ -22,22 +24,14 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 					console.log("현재 위치 설정됨")
 					console.log(position.coords);
 					// position.coords.latitude , longitude
-					if(position.coords.latitude !== GPSpos._lat ||
-						position.coords.longitude !== GPSpos._lng) {
+					if(GPSpos === null || position.coords.latitude !== GPSpos._lat || position.coords.longitude !== GPSpos._lng) {
 						setGPSpos(
 							new navermaps.LatLng(
 								position.coords.latitude,
 								position.coords.longitude
 							)
 						);
-						setZoom(14);
 					}
-					setCenter(
-						new navermaps.LatLng(
-							position.coords.latitude,
-							position.coords.longitude
-						)
-					);
 				},
 				function(error) {
 					console.error(error);
@@ -52,29 +46,49 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 		else {
 			alert('GPS를 지원하지 않습니다...');
 		}
-	}
+	};
 
 	// 맵 움직임
 	const handleCenterChanged = (pos) => {
 		setCenter(pos);
-	}
+	};
 	const handleZoomChanged = (zoom) => {
 		setZoom(zoom);
-	}
+	};
 
 	const onClickButton = () => {
 		getLocation();
 
-	}
+		if(GPSpos !== null) {
+			setCenter(
+				new navermaps.LatLng(
+					GPSpos._lat,
+					GPSpos._lng
+				)
+			);
+			setZoom(14);
+		}
+	};
 
-	// 위치 초기화
-	const onClickButton2 = () => {
-		setCenter(defaultPos);
-		setZoom(defaultZoom);
-	}
+	// 현재위치 주변으로 핀 변경
+	useEffect(() => {
+		if(GPSpos !== null) {
+			let pinList = waterSpringList.filter(item => 
+				Math.abs(item.latitude - GPSpos._lat) <= 0.019070
+				&& Math.abs(item.longitude - GPSpos._lng) <= 0.026988);
+			setRegionPin(pinList);
 
-	const [regionPin, setRegionPin] = useState([]);
+			setCenter(
+				new navermaps.LatLng(
+					GPSpos._lat,
+					GPSpos._lng
+				)
+			);
+			setZoom(14);
+		}
+	}, [GPSpos]);
 
+	// 지역 옵션에 따른 핀 변경
 	useEffect(() => {
 		if(regionOption !== "")
 			setRegionPin(
@@ -106,6 +120,7 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 		setRegionPin(waterSpringList.filter(item => popularList.includes(item.mnrlspNm)));
 		setCenter(defaultPos);
 		setZoom(defaultZoom);
+		setGPSpos(null);
 	}, [optionReset]);
 
 	// 핀 누르면 자동으로 이동
@@ -113,7 +128,7 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
 	useEffect(() => {
 		if(currentPin !== null) {
 			setCenter(new navermaps.LatLng(currentPin.latitude,currentPin.longitude));
-			setZoom(13);
+			setZoom(14);
 		}
 	}, [currentPin]);
 
@@ -138,7 +153,7 @@ function NaverMapAPI({waterSpringList, regionOption, smallOption, optionReset}) 
     			}}
     			disableKineticPan={true}
 			>
-				{(Object.keys(GPSpos).length === 0) ? <></> :
+				{ GPSpos === null ? <></> :
 					<Marker
 						key={0}
 						position={GPSpos}

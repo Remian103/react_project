@@ -17,11 +17,11 @@ def checkTime():
 	return endDt, endHh, startDt, startHh
 
 #-----------------------------------------------------------------------------------
-def sdf():
+def sdf(serviceKey):
 	wellname = input('약수터명을 입력해주세요 ')
 
 	url = 'http://api.data.go.kr/openapi/tn_pubr_public_appn_mnrlsp_info_api'
-	queryParams = '?' + urlencode({quote_plus('serviceKey') :  'CtR%2FUM6cMUC%2F0tN%2BAIEE9qng30I6%2BpqASCWBpWhHRF5EdYpe8%2F32a6tZ3gFbw8ynUqUjE%2Bk1Vuv0bFIlT2AvkQ%3D%3D', quote_plus('numOfRows') : 100, quote_plus('pageNo') : 1, quote_plus('mnrlspNm') : wellname, quote_plus('type') : 'json'})
+	queryParams = '?' + urlencode({quote_plus('serviceKey') :  serviceKey, quote_plus('numOfRows') : 100, quote_plus('pageNo') : 1, quote_plus('mnrlspNm') : wellname, quote_plus('type') : 'json'})
 
 	get_data2 = requests.get(url + unquote(queryParams))
 	result_data2 = get_data2.json()
@@ -37,7 +37,7 @@ def sdf():
 
 #------------------------------------------------------------------------------------
 
-def checkWeather(wellname, localname, roadname, drink_ok, endDt, endHh, startDt, startHh):
+def checkWeather(wellname, localname, roadname, drink_ok, endDt, endHh, startDt, startHh, serviceKey):
 	localcode = 0
 	if '서울' in localname :
 		localcode = 108
@@ -378,10 +378,9 @@ def checkWeather(wellname, localname, roadname, drink_ok, endDt, endHh, startDt,
 	else:
 		print(wellname, '지역 찾지 못함')
 		return None, None
-	print(localcode)
 	#------------------------------------------------------------------------------------
 	url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
-	queryParams = '?' + urlencode({quote_plus('serviceKey') : 'CtR%2FUM6cMUC%2F0tN%2BAIEE9qng30I6%2BpqASCWBpWhHRF5EdYpe8%2F32a6tZ3gFbw8ynUqUjE%2Bk1Vuv0bFIlT2AvkQ%3D%3D', quote_plus('numOfRows') : 100, quote_plus('pageNo') : 1, quote_plus('dataCd') : 'ASOS', quote_plus('dateCd') : 'HR', quote_plus('stnIds') : localcode, quote_plus('endDt') : endDt, quote_plus('endHh') : endHh, quote_plus('startHh') : startHh, quote_plus('startDt') : startDt, quote_plus('dataType') : 'JSON'})
+	queryParams = '?' + urlencode({quote_plus('serviceKey') : serviceKey, quote_plus('numOfRows') : 100, quote_plus('pageNo') : 1, quote_plus('dataCd') : 'ASOS', quote_plus('dateCd') : 'HR', quote_plus('stnIds') : localcode, quote_plus('endDt') : endDt, quote_plus('endHh') : endHh, quote_plus('startHh') : startHh, quote_plus('startDt') : startDt, quote_plus('dataType') : 'JSON'})
 
 	get_data = requests.get(url + unquote(queryParams))
 	result_data = get_data.json()
@@ -398,7 +397,6 @@ def checkWeather(wellname, localname, roadname, drink_ok, endDt, endHh, startDt,
 		n += 1
 	#---------강수량 10mm이하 지역 : total_rn = 0, 10mm이상 지역 : total_rn = 내린만큼----------
 	if (drink_ok == '적합' and total_rn == 0.0) :
-		print(wellname, '음용에 적합한 물입니다')
 		return True, total_rn
 	else :
 		print(wellname, total_rn, '음용에 주의가 필요한 물입니다')
@@ -406,7 +404,7 @@ def checkWeather(wellname, localname, roadname, drink_ok, endDt, endHh, startDt,
 
 def FindrecentDate(wellname):
 	url = 'http://api.data.go.kr/openapi/tn_pubr_public_appn_mnrlsp_info_api'
-	queryParams = '?' + urlencode({quote_plus('serviceKey') :  'CtR%2FUM6cMUC%2F0tN%2BAIEE9qng30I6%2BpqASCWBpWhHRF5EdYpe8%2F32a6tZ3gFbw8ynUqUjE%2Bk1Vuv0bFIlT2AvkQ%3D%3D', quote_plus('numOfRows') : 1000, quote_plus('pageNo') : 1, quote_plus('mnrlspNm') : wellname, quote_plus('type') : 'json'})
+	queryParams = '?' + urlencode({quote_plus('serviceKey') :  serviceKey, quote_plus('numOfRows') : 1000, quote_plus('pageNo') : 1, quote_plus('mnrlspNm') : wellname, quote_plus('type') : 'json'})
 
 	get_data2 = requests.get(url + unquote(queryParams))
 	result_data2 = get_data2.json()
