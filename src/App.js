@@ -10,6 +10,7 @@ import CautionPage from './CautionPage'
 //import localData from './data/test_json_data.json';
 import localData from './data/well_list_file.json';
 import region from './data/region.json';
+import apiKey from './data/key.json';
 
 
 
@@ -24,7 +25,7 @@ function App() {
 		console.log("약수터 정보 불러오는중 (axios)");
 		for(let i = 1; i <= 15; i++) {
 			let pageNo = String(i);
-			let url = '/openapi/tn_pubr_public_appn_mnrlsp_info_api?serviceKey=CtR%2FUM6cMUC%2F0tN%2BAIEE9qng30I6%2BpqASCWBpWhHRF5EdYpe8%2F32a6tZ3gFbw8ynUqUjE%2Bk1Vuv0bFIlT2AvkQ%3D%3D&pageNo='+pageNo+'&numOfRows=100&type=json';
+			let url = '/openapi/tn_pubr_public_appn_mnrlsp_info_api?serviceKey='+apiKey.DATA_GO_KR_KEY+'&pageNo='+pageNo+'&numOfRows=100&type=json';
 			console.log(url);
 			axios.get(url)
 			.then((res) => {
@@ -117,7 +118,7 @@ function App() {
 			</div>
 			<div>
 				<RenderAfterNavermapsLoaded
-					ncpClientId={'qc9tjlbthj'} // personal client id
+					ncpClientId={apiKey.NAVER_KEY} // personal client id
 					error={<p>Maps Load Error...</p>}
 					loading={<p>Maps Loading...</p>}
 				>
